@@ -1,0 +1,210 @@
+<!--Name: SEKONI QUDUS-->
+<!--Department: COMPUTER SCIENCE-->
+<!--LEVEL: 300 LEVEL-->
+<!--COURSE TITLE: ARTIFICIAL INTELLIGENCE-->
+<!--Lecturer's Name: MR. IDRIS-->
+
+<!--Assignment: Create a TIC-TAC-TOE game using any programming language. But It 
+    should be played between a computer and a user. Also, user should be able to win computer.....-->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Tic Tac Toe</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background-color: #f2f2f2;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        m {
+            font-family: 'Lobster', cursive;
+            font-size: 48px;
+            margin: 20px 0;
+            color: #e25016;
+        }
+        
+        v {
+            font-family: 'Lobster', cursive;
+            font-size: 48px;
+            margin: 20px 0;
+            color: #31c20d;
+        }
+        
+        n {
+            font-family: 'Lobster', cursive;
+            font-size: 48px;
+            margin: 20px 0;
+            color: #800dc2;
+        }
+        
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .board {
+            background-color: #3574a8c7;
+            box-shadow: 0 0 10px rgba(36, 22, 230, 0.671);
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 5px;
+            margin: 0 auto;
+            width: 310px;
+        }
+        
+        .cell {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            border: 2px solid #39b8dfd2;
+            cursor: pointer;
+            background-color: #46358394;
+        }
+        
+        .cell:hover {
+            background-color: #7e2a62;
+        }
+        
+        #startButton,
+        #restartButton {
+            background-color: #12b142d2;
+            color: #030303d3;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 30px;
+            font-size: 24px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        
+        #startButton:hover,
+        #restartButton:hover {
+            background-color: #c7bc26ef;
+        }
+    </style>
+</head>
+
+<body>
+    <m>Tic</m>
+    <v>Tac</v>
+    <n>Toe</n>
+    <div class="game-container">
+        <div class="board" id="board"></div>
+        <button id="startButton">Start Game</button>
+        <button id="restartButton" style="display: none;">Restart Game</button>
+    </div>
+    <script>
+        const board = document.getElementById('board');
+        const cells = [];
+        let currentPlayer = 'X';
+        let computerPlayer = 'O'; // Computer player
+
+        let gameOver = false;
+
+        function initializeGame() {
+            cells.forEach(cell => cell.innerHTML = '');
+            startButton.style.display = 'none';
+            restartButton.style.display = 'none';
+            gameOver = false;
+            // Set the current player to 'X' when initializing the game
+            currentPlayer = 'X';
+        }
+
+        function getRandomEmptyCell() {
+            const emptyCells = cells.filter(cell => cell.innerHTML === '');
+            if (emptyCells.length > 0) {
+                const randomIndex = Math.floor(Math.random() * emptyCells.length);
+                return emptyCells[randomIndex];
+            }
+            return null; // No empty cells
+        }
+
+        for (let i = 0; i < 9; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.dataset.index = i;
+            cells.push(cell);
+            board.appendChild(cell);
+        }
+
+        const startButton = document.getElementById('startButton');
+        const restartButton = document.getElementById('restartButton');
+
+        startButton.addEventListener('click', () => {
+            // Initialize the game when the start button is clicked
+            initializeGame();
+
+            // Add click event listeners to cells after the game has started
+            cells.forEach(cell => {
+                cell.addEventListener('click', () => {
+                    if (cell.innerHTML === '' && !gameOver) {
+                        cell.innerHTML = currentPlayer;
+                        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+
+                        if (checkWin() || checkDraw()) {
+                            gameOver = true;
+                            restartButton.style.display = 'block';
+                        }
+
+                        // Computer's turn
+                        if (!gameOver) {
+                            const computerMoveCell = getRandomEmptyCell();
+                            if (computerMoveCell) {
+                                computerMoveCell.innerHTML = computerPlayer;
+                                currentPlayer = 'X';
+                            }
+
+                            if (checkWin() || checkDraw()) {
+                                gameOver = true;
+                                restartButton.style.display = 'block';
+                            }
+                        }
+                    }
+                });
+            });
+        });
+
+        function checkWin() {
+            const winningCombinations = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6]
+            ];
+
+            for (const combination of winningCombinations) {
+                const [a, b, c] = combination;
+                if (cells[a].innerHTML && cells[a].innerHTML === cells[b].innerHTML && cells[a].innerHTML === cells[c].innerHTML) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        function checkDraw() {
+            return cells.every(cell => cell.innerHTML !== '');
+        }
+
+        startButton.addEventListener('click', initializeGame);
+        restartButton.addEventListener('click', initializeGame);
+    </script>
+</body>
+
+</html>
